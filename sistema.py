@@ -1,7 +1,7 @@
 # Criação do codigo_____________________________________________________________________________________________________
 import customtkinter
 from tkinter import ttk
-
+import sqlite3
 import tkinter as tk
 customtkinter.set_appearance_mode('dark')
 aba = customtkinter.CTk()
