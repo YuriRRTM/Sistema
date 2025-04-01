@@ -1,7 +1,7 @@
 # Criação do codigo_____________________________________________________________________________________________________
 import customtkinter
 from tkinter import ttk
-import sqlite3
+
 import tkinter as tk
 customtkinter.set_appearance_mode('dark')
 aba = customtkinter.CTk()
@@ -25,7 +25,7 @@ def troca_Cadastro():
 def criar_banco():
     conexao = sqlite3.connect("dados_cadastro.db")
     terminal_sql = conexao.cursor()
-    terminal_sql.execute("CREATE TABLE IF NOT EXISTS pessoas (nomes text, preco decimal, desc text)")
+    terminal_sql.execute("CREATE TABLE IF NOT EXISTS pessoas (nomes text, preco decimal, quantidade decimal ,desc text)")
     conexao.commit()
     conexao.close()
 
