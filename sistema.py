@@ -11,6 +11,7 @@ aba.geometry('800x400')
 
 # Criação de defs ______________________________________________________________________________________________________
 
+
 def troca_Cadastro():
     frame_editar.grid_forget()
     frame_saida.grid_forget()
@@ -154,7 +155,7 @@ def salvar_items():
     valor_checkbox = Editar_Nome_Produto.get()
     conexao = sqlite3.connect("dados_cadastro.db")
     terminal_sql = conexao.cursor()
-    terminal_sql.execute(f"UPDATE pessoas SET nomes = '{Editar_Nome_Produto.get()}', preco = '{Editar_preco_Produto.get()}', desc = '{Editar_Descricao_Produto.get(0.0, 'end')}' WHERE nomes = '{check_var}'")
+    terminal_sql.execute(f"UPDATE pessoas SET nomes = '{Editar_Nome_Produto.get()}', preco = '{Editar_preco_Produto.get()}', desc = '{Editar_Descricao_Produto.get(0.0, 'end')}' WHERE nomes = '{check_var.get()}'")
     conexao.commit()
     conexao.close()
     Editar_Nome_Produto.delete(0, 'end')
@@ -163,20 +164,25 @@ def salvar_items():
     ler_dados_lista_editar()
 
 
-def atualizar():
+'''def atualizar_lista_saida():
 
     check_var = customtkinter.StringVar(value="on")
+    items_saida = []
+    items_saida.append(Quantidade_Produtos_Saida.get())
     for botaozinho in Lista_Excluir_Produtos_Saida.winfo_children():
         botaozinho.destroy()
-
-    for i, item in enumerate(items_entrada):
         box = customtkinter.CTkCheckBox(Lista_Excluir_Produtos_Saida, text=item, command=lambda: seleciona_item() if
             check_var.get() else None, variable=check_var, onvalue=item, offvalue="")
-        box.grid(row=i, column=0, pady=5, padx=10, sticky="w")
+        box.grid(row=1, column=0, pady=5, padx=10, sticky="w")
 
         deletar_botao = customtkinter.CTkButton(Lista_Excluir_Produtos_Saida, text="🗑️", fg_color="red", width=40,
-                                                command=lambda index=i: deletar_item(index))
-        deletar_botao.grid(row=i, column=1, padx=10, pady=5)
+                                                command=lambda: deletar_item())
+        deletar_botao.grid(row=1, column=1, padx=10, pady=5)
+'''
+
+def deletar_item(index):
+    items_entrada.pop(index)
+    #atualizar_lista_saida()
 
 
 def seleciona_item():
@@ -186,15 +192,14 @@ def seleciona_item():
     terminal_sql = conexao.cursor()
     terminal_sql.execute(f"SELECT * FROM pessoas WHERE nomes = '{valor_checkbox}'")
     receber_dados_produtos = terminal_sql.fetchall()
-    print(receber_dados_produtos)
     Editar_Nome_Produto.delete(0, 'end')
     Editar_preco_Produto.delete(0, 'end')
     Editar_Descricao_Produto.delete(0.0, 'end')
-    Nome_Quantidade_Campo.delete(0, 'end')
-    Quantidade_Produtos_Saida.delete(0, 'end')
+    Nome_Entrada.delete(0, 'end')
+    Nome_Saida.delete(0, 'end')
 
-    Quantidade_Produtos_Saida.insert(0, receber_dados_produtos[0][0])
-    Nome_Quantidade_Campo.insert(0, receber_dados_produtos[0][0])
+    Nome_Saida.insert(0, receber_dados_produtos[0][0])
+    Nome_Entrada.insert(0, receber_dados_produtos[0][0])
     Editar_Nome_Produto.insert(0, receber_dados_produtos[0][0])
     Editar_preco_Produto.insert(0, receber_dados_produtos[0][1])
     Editar_Descricao_Produto.insert(0.0, receber_dados_produtos[0][2])
@@ -268,11 +273,6 @@ def troca_relatorio_saida():
     frame_relatorio_entrada.grid_forget()
     frame_relatorio_saida.grid_propagate(False)
     frame_relatorio_saida.grid(row=0, column=1, pady=10, padx=10)
-
-
-def deletar_item(index):
-    items_entrada.pop(index)
-    atualizar()
 
 
 def abrir_pop_up():
@@ -443,26 +443,20 @@ Lista_produtos_saida.grid(pady=5, padx=20, sticky="w", row=2, column=0, rowspan=
 
 labeal_saida_dados = customtkinter.CTkLabel(frame_saida)
 
-Quantidade_Produtos_Saida = customtkinter.CTkEntry(frame_saida, placeholder_text="Quantidades de items no estoque",
-                                                   width=280)
-Quantidade_Produtos_Saida.grid(pady=5, padx=290, row=1, column=0, sticky="w")
+Nome_Saida = customtkinter.CTkEntry(frame_saida, placeholder_text="Nome do item:",width=280)
+Nome_Saida.grid(pady=5, padx=290, row=1, column=0, sticky="w")
 
-Botao_Adicionar_Saida = customtkinter.CTkButton(frame_saida, text='Adicionar item', width=120, fg_color="green", )
+Botao_Adicionar_Saida = customtkinter.CTkButton(frame_saida, text='Adicionar item', width=120, fg_color="green",)#command=atualizar_lista_saida())
 Botao_Adicionar_Saida.grid(pady=1, padx=450, row=2, column=0, sticky="w", columnspan=2)
 
 Busca_Produto_Saida = customtkinter.CTkEntry(frame_saida, placeholder_text="Campo de Busca:", width=225)
 Busca_Produto_Saida.grid(row=1, column=0, pady=2, padx=20, sticky="w", columnspan=2)
 
-Busca_Estoque_Saida = customtkinter.CTkEntry(frame_saida, placeholder_text="", width=140)
+Busca_Estoque_Saida = customtkinter.CTkEntry(frame_saida, placeholder_text="Quantidade de itens:", width=140)
 Busca_Estoque_Saida.grid(pady=1, padx=290, row=2, column=0, sticky="w", columnspan=2)
 
 Lista_Excluir_Produtos_Saida = customtkinter.CTkScrollableFrame(frame_saida, width=260)
 Lista_Excluir_Produtos_Saida.grid(row=3, column=0, pady=1, padx=290, sticky="w")
-items_saida = []
-
-for item in items_saida:
-    box_excluir_saida = customtkinter.CTkCheckBox(Lista_Excluir_Produtos_Saida, text=item)
-    box_excluir_saida.pack(pady=5, padx=10)
 
 Botao_Cancelar_Saida = customtkinter.CTkButton(frame_saida, text="Cancelar", width=80, fg_color="red")
 Botao_Cancelar_Saida.grid(row=4, column=0, pady=5, padx=290, sticky="w")
@@ -478,12 +472,11 @@ Titulo_Entrada.grid(row=0, column=1, pady=20, sticky="w")
 Busca_Entrada = customtkinter.CTkEntry(frame_entrada, placeholder_text="campo de busca:", width=150)
 Busca_Entrada.grid(row=1, column=0, pady=5, padx=15, stick="w", columnspan=2)
 
-Nome_Quantidade_Campo = customtkinter.CTkEntry(frame_entrada, placeholder_text="Quantidade de itens no estoque:",
-                                               width=300)
-Nome_Quantidade_Campo.grid(row=1, column=1, pady=5, padx=5, stick="w")
+Nome_Entrada = customtkinter.CTkEntry(frame_entrada, placeholder_text="Nome do item:", width=300)
+Nome_Entrada.grid(row=1, column=1, pady=5, padx=5, stick="w")
 
-Descricao_Entrada = customtkinter.CTkEntry(frame_entrada, placeholder_text="", width=100)
-Descricao_Entrada.grid(row=2, column=1, pady=5, padx=10, stick="w")
+Quantidade_Entrada = customtkinter.CTkEntry(frame_entrada, placeholder_text="Quantidade de itens:", width=100)
+Quantidade_Entrada.grid(row=2, column=1, pady=5, padx=10, stick="w")
 
 Adicionar_Entrada = customtkinter.CTkButton(frame_entrada, text="Adicionar item", width=120, fg_color="green")
 Adicionar_Entrada.grid(row=2, column=1, pady=5, padx=10, stick="e")
@@ -499,7 +492,7 @@ Lista_Produtos_Entrada.grid(pady=5, padx=20, stick="we", row=2, column=0, rowspa
 
 labeal_entrada_dados = customtkinter.CTkLabel(frame_saida)
 
-items_entrada = ["Produto 1", "Produto 2", "Produto 3", "Produto 4", "Produto 5", "Produto 6", "Produto 7", "Produto 8"]
+items_entrada = []
 
 for item in items_entrada:
     box_entrada = customtkinter.CTkCheckBox(Lista_Produtos_Entrada, text=item)
@@ -643,6 +636,6 @@ Botao_Entrada.grid(padx=10, row=3, column=2, sticky="w")
 
 # Pop-up  ______________________________________________________________________________________________________________
 
-atualizar()
+#atualizar_lista_saida()
 
 aba.mainloop()
