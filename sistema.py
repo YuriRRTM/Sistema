@@ -147,12 +147,14 @@ def cancelar():
     Editar_Nome_Produto.delete(0, 'end')
     Editar_preco_Produto.delete(0, 'end')
     Editar_Descricao_Produto.delete(0.0, 'end')
+    ler_dados_lista_editar()
 
 
-def salvar_items(nome_produto, preco_produto, desc_produto):
+def salvar_items():
+    valor_checkbox = Editar_Nome_Produto.get()
     conexao = sqlite3.connect("dados_cadastro.db")
     terminal_sql = conexao.cursor()
-    terminal_sql.execute(F"UPDATE pessoas SET nomes = '{nome_produto}', preco = '{preco_produto}', desc = '{desc_produto(0.0, 'end')}' WHERE nome = '{valor_checkbox}'")
+    terminal_sql.execute(f"UPDATE pessoas SET nomes = '{Editar_Nome_Produto.get()}', preco = '{Editar_preco_Produto.get()}', desc = '{Editar_Descricao_Produto.get(0.0, 'end')}' WHERE nomes = '{check_var}'")
     conexao.commit()
     conexao.close()
     Editar_Nome_Produto.delete(0, 'end')
@@ -421,7 +423,7 @@ Editar_preco_Produto.grid(row=3, column=0, pady=5, padx=250, stick='w')
 Editar_Descricao_Produto = customtkinter.CTkTextbox(frame_editar, width=300, height=100)
 Editar_Descricao_Produto.grid(row=4, column=0, pady=0, padx=250, stick="w")
 
-Botao_Salvar_Frame_Editar = customtkinter.CTkButton(frame_editar, text='salvar', width=80, height=30, command=lambda: salvar_items(Editar_Nome_Produto.get(), Editar_preco_Produto.get(), Editar_Descricao_Produto.get()))
+Botao_Salvar_Frame_Editar = customtkinter.CTkButton(frame_editar, text='salvar', width=80, height=30, command=lambda: salvar_items())
 Botao_Salvar_Frame_Editar.grid(row=5, column=0, pady=5, padx=370, stick="w")
 
 Botao_Cancelar_Frame_Editar = customtkinter.CTkButton(frame_editar, text='cancelar', width=80, height=30, command=cancelar)
@@ -429,7 +431,6 @@ Botao_Cancelar_Frame_Editar.grid(row=5, column=0, pady=5, padx=480, stick="w")
 
 Botao_Excluir_Frame_Editar = customtkinter.CTkButton(frame_editar, text='excluir', fg_color='red', width=80, height=30,
                                                      command=lambda: deletar_items(Editar_Nome_Produto.get()))
-
 Botao_Excluir_Frame_Editar.grid(row=5, column=0, pady=5, padx=260, stick="w")
 
 # Saida _________________________________________________________________________________________________________________
@@ -641,7 +642,6 @@ Botao_Entrada = customtkinter.CTkButton(frame_relatorio_saida, text="entrada", w
 Botao_Entrada.grid(padx=10, row=3, column=2, sticky="w")
 
 # Pop-up  ______________________________________________________________________________________________________________
-
 
 atualizar()
 
